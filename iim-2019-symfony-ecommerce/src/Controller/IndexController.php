@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Collection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -12,9 +13,12 @@ class IndexController extends AbstractController
      */
     public function index()
     {
-        return $this->render('index/index.html.twig');
+        $repository = $this->getDoctrine()->getRepository(Collection::class);
+        $collections = $repository->findAll();
+        dump($collections);
+        return $this->render('index/index.html.twig', ['collections' => $collections]);
     }
-    
+
     /**
      * @Route("/empty", name="empty")
      */
@@ -22,4 +26,6 @@ class IndexController extends AbstractController
     {
         return $this->render('empty.html.twig');
     }
+
 }
+
