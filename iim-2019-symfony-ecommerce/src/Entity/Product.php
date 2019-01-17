@@ -32,6 +32,11 @@ class Product
     private $price;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $stock;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $sku;
@@ -137,6 +142,18 @@ class Product
     public function setDateAdd(\DateTimeInterface $dateAdd): self
     {
         $this->dateAdd = $dateAdd;
+
+        return $this;
+    }
+
+    public function getStock(): ?int
+    {
+        return $this->stock;
+    }
+
+    public function setStock(int $stock): self
+    {
+        $this->stock = $stock;
 
         return $this;
     }
