@@ -20,8 +20,14 @@ class ProductController extends AbstractController
      */
     public function index(ProductRepository $productRepository): Response
     {
+        $search = new PropertySearch();
+        $form = $this->createForm(PropertySearchType::class, $search);
+        $form->handleRequest($request);
+        
+        
         return $this->render('admin/product/index.html.twig', [
-            'products' => $productRepository->findAll(),
+            'products' => $productRepository->findAll($search),
+            'form'     => $form->createView()
         ]);
     }
 
@@ -92,5 +98,23 @@ class ProductController extends AbstractController
         }
 
         return $this->redirectToRoute('product_index');
+    }
+    
+    public function findAll(PropertySearch $search): Query
+    {
+        $query = $this->findAll();
+        
+        if ($search->getMaxPrice()){
+            $query = $query
+                ->andWhere('p.price <= :maxprice')
+                ->setParameter('maxprice', $search->getMaxPrice());
+        }
+        
+        if ($search->getMinStock()){
+            $query = $query
+                ->where('p.stock >= :minStock')
+                ->setParameter('minStock', $search->getMinStock());
+        }
+        return $query->getQuery();
     }
 }
